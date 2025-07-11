@@ -1,5 +1,5 @@
 import { orderBurgerApi } from '@api';
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TOrder } from '@utils-types';
 
 export const orderBurger = createAsyncThunk(
@@ -8,14 +8,12 @@ export const orderBurger = createAsyncThunk(
 );
 
 type TOrderState = {
-  data: string[];
   orderModalData: TOrder | null;
   orderRequest: boolean;
   error: string | null;
 };
 
 const initialState: TOrderState = {
-  data: [],
   orderModalData: null,
   orderRequest: false,
   error: null
@@ -25,12 +23,11 @@ export const orderSlice = createSlice({
   name: 'order',
   initialState,
   reducers: {
-    setData: (state, action: PayloadAction<string[]>) => {
-      state.data = action.payload;
+    resetOrderModalData: (state) => {
+      state.orderModalData = null;
     }
   },
   selectors: {
-    selectData: (state) => state.data,
     selectOrderModalData: (state) => state.orderModalData,
     selectOrderRequest: (state) => state.orderRequest
   },
@@ -40,13 +37,16 @@ export const orderSlice = createSlice({
         state.orderRequest = true;
       })
       .addCase(orderBurger.fulfilled, (state, action) => {
-        (state.orderRequest = false),
-          (state.orderModalData = action.payload.order);
+        state.orderRequest = false;
+        state.orderModalData = action.payload.order;
+      })
+      .addCase(orderBurger.rejected, (state, action) => {
+        state.error = action.error?.message || 'Ошибка загрузки';
       });
   }
 });
 
-export const { selectData, selectOrderModalData, selectOrderRequest } =
+export const { selectOrderModalData, selectOrderRequest } =
   orderSlice.selectors;
 
-export const { setData } = orderSlice.actions;
+export const { resetOrderModalData } = orderSlice.actions;

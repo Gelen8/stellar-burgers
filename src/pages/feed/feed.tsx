@@ -11,8 +11,7 @@ export const Feed: FC = () => {
     dispatch(loadFeeds());
   }, []);
   /** TODO: взять переменную из стора */
-  //const orders: TOrder[] = [];
-  const orders = useSelector(selectOrders);
+  const orders: TOrder[] = useSelector(selectOrders);
 
   if (!orders.length) {
     return <Preloader />;

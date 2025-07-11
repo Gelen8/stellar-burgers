@@ -36,6 +36,10 @@ export const constructorSlice = createSlice({
         state.constructorItems.ingredients.filter(
           (ingredient) => ingredient.id !== action.payload
         );
+    },
+    resetConstructorData: (state) => {
+      state.constructorItems.bun = null;
+      state.constructorItems.ingredients = [];
     }
   },
   selectors: {
@@ -45,4 +49,5 @@ export const constructorSlice = createSlice({
 
 export const { selectConstructorItems } = constructorSlice.selectors;
 
-export const { addItems, removeItem } = constructorSlice.actions;
+export const { addItems, removeItem, resetConstructorData } =
+  constructorSlice.actions;

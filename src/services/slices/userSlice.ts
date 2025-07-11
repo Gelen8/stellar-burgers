@@ -1,7 +1,15 @@
-import { getUserApi, loginUserApi, logoutApi, TLoginData } from '@api';
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+  getUserApi,
+  loginUserApi,
+  logoutApi,
+  registerUserApi,
+  TLoginData,
+  TRegisterData,
+  updateUserApi
+} from '@api';
+import { Action, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
-import { getCookie } from 'src/utils/cookie';
+import { getCookie } from '../../utils/cookie';
 
 export const login = createAsyncThunk('user/login', async (data: TLoginData) =>
   loginUserApi(data)
@@ -9,12 +17,22 @@ export const login = createAsyncThunk('user/login', async (data: TLoginData) =>
 
 export const logout = createAsyncThunk('user/logaut', async () => logoutApi());
 
+export const register = createAsyncThunk(
+  'user/register',
+  async (data: TRegisterData) => registerUserApi(data)
+);
+
+export const updateUser = createAsyncThunk(
+  'user/updateUser',
+  async (data: Partial<TRegisterData>) => updateUserApi(data)
+);
+
 export const checkUserAuth = createAsyncThunk(
   'user/checkUserAuth',
   async (_, { dispatch }) => {
     if (getCookie('accessToken')) {
       getUserApi()
-        .then((user) => dispatch(setUser(user)))
+        .then((user) => dispatch(setUser(user.user)))
         .finally(() => dispatch(setIsAuthChecked(true)));
     } else {
       dispatch(setIsAuthChecked(true));
@@ -22,14 +40,24 @@ export const checkUserAuth = createAsyncThunk(
   }
 );
 
+interface RejectedAction extends Action {
+  error: Error;
+}
+
+function isRejectedAction(action: Action): action is RejectedAction {
+  return action.type.endsWith('rejected');
+}
+
 type TUserState = {
   user: TUser | null;
   isAuthChecked: boolean;
+  error: string;
 };
 
 const initialState: TUserState = {
   user: null,
-  isAuthChecked: false
+  isAuthChecked: false,
+  error: ''
 };
 
 export const userSlice = createSlice({
@@ -44,7 +72,9 @@ export const userSlice = createSlice({
     }
   },
   selectors: {
-    selectUser: (state) => state.user
+    selectUser: (state) => state.user,
+    selectIsAuthChecked: (state) => state.isAuthChecked,
+    selectUserError: (state) => state.error
   },
   extraReducers: (builder) => {
     builder
@@ -54,10 +84,20 @@ export const userSlice = createSlice({
       })
       .addCase(logout.fulfilled, (state) => {
         state.user = null;
+      })
+      .addCase(register.fulfilled, (state, action) => {
+        state.user = action.payload.user;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.user = action.payload.user;
+      })
+      .addMatcher(isRejectedAction, (state, action) => {
+        state.error = action.error.message;
       });
   }
 });
 
-export const { selectUser } = userSlice.selectors;
+export const { selectUser, selectIsAuthChecked, selectUserError } =
+  userSlice.selectors;
 
 export const { setIsAuthChecked, setUser } = userSlice.actions;

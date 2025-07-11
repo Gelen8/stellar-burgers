@@ -2,15 +2,18 @@ import { FC, useMemo } from 'react';
 import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
 import { useDispatch, useSelector } from '../../services/store';
-import { selectConstructorItems } from '../../services/slices/constructorSlice';
+import {
+  resetConstructorData,
+  selectConstructorItems
+} from '../../services/slices/constructorSlice';
 import {
   orderBurger,
-  selectData,
   selectOrderModalData,
   selectOrderRequest,
-  setData
+  resetOrderModalData
 } from '../../services/slices/orderSlice';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { selectUser } from '../../services/slices/userSlice';
 
 export const BurgerConstructor: FC = () => {
   /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
@@ -26,10 +29,12 @@ export const BurgerConstructor: FC = () => {
   // const orderModalData = null;
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const constructorItems = useSelector(selectConstructorItems);
   const orderRequest = useSelector(selectOrderRequest);
   const orderModalData = useSelector(selectOrderModalData);
+  const userData = useSelector(selectUser);
 
   const dataOrder: string[] = [];
   constructorItems.bun && dataOrder.push(constructorItems.bun._id);
@@ -38,11 +43,20 @@ export const BurgerConstructor: FC = () => {
   );
 
   const onOrderClick = () => {
-    if (!constructorItems.bun || orderRequest) return;
-    console.log('я тут');
-    dispatch(orderBurger(dataOrder));
+    if (!constructorItems.bun || orderRequest) {
+      return;
+    } else if (userData) {
+      console.log('Ты авторизован');
+      dispatch(orderBurger(dataOrder));
+    } else {
+      console.log('Ты не авторизован');
+      navigate('/login');
+    }
   };
-  const closeOrderModal = () => navigate(-1);
+  const closeOrderModal = () => {
+    dispatch(resetOrderModalData());
+    dispatch(resetConstructorData());
+  };
 
   const price = useMemo(
     () =>
