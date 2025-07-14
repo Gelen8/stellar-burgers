@@ -19,7 +19,6 @@ import { useEffect } from 'react';
 import { loadIngredients } from '../../services/slices/ingredientsSlice';
 import { checkUserAuth } from '../../services/slices/userSlice';
 import { OnlyAuth, OnlyUnAuth } from '../protected-route';
-import { loadFeeds } from '../../services/slices/feedSlice';
 
 const App = () => {
   const location = useLocation();
@@ -29,7 +28,6 @@ const App = () => {
 
   useEffect(() => {
     dispatch(loadIngredients());
-    dispatch(loadFeeds());
     dispatch(checkUserAuth());
   }, []);
 

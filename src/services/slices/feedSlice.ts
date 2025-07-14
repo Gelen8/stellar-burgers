@@ -7,13 +7,11 @@ import {
 } from '@reduxjs/toolkit';
 import { TOrder } from '@utils-types';
 
-export const loadFeeds = createAsyncThunk('feed/loadFeeds', async () =>
-  getFeedsApi()
-);
+export const loadFeeds = createAsyncThunk('feed/loadFeeds', getFeedsApi);
 
 export const loadProfileOrders = createAsyncThunk(
   'feed/loadProfileOrders',
-  async () => getOrdersApi()
+  getOrdersApi
 );
 
 interface RejectedAction extends Action {
@@ -95,7 +93,11 @@ export const {
 
 export const selectOrderByNumber = createSelector(
   feedSlice.selectors.selectOrders,
+  feedSlice.selectors.selectProfileOrders,
   (state, number) => number,
-  (orders: TOrder[], number: string) =>
-    orders.find((order) => order.number.toString() === number)
+  (orders: TOrder[], profileOrders: TOrder[], number: string) => {
+    const order = orders.find((order) => order.number.toString() === number);
+    if (order) return order;
+    return profileOrders.find((order) => order.number.toString() === number);
+  }
 );

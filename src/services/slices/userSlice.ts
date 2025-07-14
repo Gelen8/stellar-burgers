@@ -3,29 +3,19 @@ import {
   loginUserApi,
   logoutApi,
   registerUserApi,
-  TLoginData,
-  TRegisterData,
   updateUserApi
 } from '@api';
 import { Action, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
 import { getCookie } from '../../utils/cookie';
 
-export const login = createAsyncThunk('user/login', async (data: TLoginData) =>
-  loginUserApi(data)
-);
+export const login = createAsyncThunk('user/login', loginUserApi);
 
-export const logout = createAsyncThunk('user/logaut', async () => logoutApi());
+export const logout = createAsyncThunk('user/logaut', logoutApi);
 
-export const register = createAsyncThunk(
-  'user/register',
-  async (data: TRegisterData) => registerUserApi(data)
-);
+export const register = createAsyncThunk('user/register', registerUserApi);
 
-export const updateUser = createAsyncThunk(
-  'user/updateUser',
-  async (data: Partial<TRegisterData>) => updateUserApi(data)
-);
+export const updateUser = createAsyncThunk('user/updateUser', updateUserApi);
 
 export const checkUserAuth = createAsyncThunk(
   'user/checkUserAuth',

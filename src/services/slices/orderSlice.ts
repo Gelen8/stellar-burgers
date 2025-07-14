@@ -4,7 +4,7 @@ import { TOrder } from '@utils-types';
 
 export const orderBurger = createAsyncThunk(
   'order/orderBurger',
-  async (data: string[]) => orderBurgerApi(data)
+  orderBurgerApi
 );
 
 type TOrderState = {
