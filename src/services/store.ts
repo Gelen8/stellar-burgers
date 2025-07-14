@@ -17,7 +17,7 @@ const rootReducer = combineSlices(
   feedSlice,
   orderSlice,
   userSlice
-); // Заменить на импорт настоящего редьюсера
+);
 
 const store = configureStore({
   reducer: rootReducer,

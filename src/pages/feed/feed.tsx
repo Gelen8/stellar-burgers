@@ -7,9 +7,6 @@ import { loadFeeds, selectOrders } from '../../services/slices/feedSlice';
 
 export const Feed: FC = () => {
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(loadFeeds());
-  }, []);
   /** TODO: взять переменную из стора */
   const orders: TOrder[] = useSelector(selectOrders);
 

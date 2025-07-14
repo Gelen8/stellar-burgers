@@ -13,7 +13,6 @@ import { selectIngredients } from '../../services/slices/ingredientsSlice';
 export const OrderInfo: FC = () => {
   /** TODO: взять переменные orderData и ingredients из стора */
   const { number } = useParams();
-  const orders = useSelector(selectOrders);
   const orderData = useSelector((state) => selectOrderByNumber(state, number));
   const ingredients: TIngredient[] = useSelector(selectIngredients);
 

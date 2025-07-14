@@ -29,16 +29,19 @@ export const orderSlice = createSlice({
   },
   selectors: {
     selectOrderModalData: (state) => state.orderModalData,
-    selectOrderRequest: (state) => state.orderRequest
+    selectOrderRequest: (state) => state.orderRequest,
+    selectOrderError: (state) => state.error
   },
   extraReducers: (builder) => {
     builder
       .addCase(orderBurger.pending, (state) => {
         state.orderRequest = true;
+        state.error = null;
       })
       .addCase(orderBurger.fulfilled, (state, action) => {
         state.orderRequest = false;
         state.orderModalData = action.payload.order;
+        state.error = null;
       })
       .addCase(orderBurger.rejected, (state, action) => {
         state.error = action.error?.message || 'Ошибка загрузки';
@@ -46,7 +49,7 @@ export const orderSlice = createSlice({
   }
 });
 
-export const { selectOrderModalData, selectOrderRequest } =
+export const { selectOrderModalData, selectOrderRequest, selectOrderError } =
   orderSlice.selectors;
 
 export const { resetOrderModalData } = orderSlice.actions;

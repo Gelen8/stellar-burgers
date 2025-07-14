@@ -14,11 +14,12 @@ import styles from './app.module.css';
 
 import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from '../../services/store';
+import { useDispatch } from '../../services/store';
 import { useEffect } from 'react';
 import { loadIngredients } from '../../services/slices/ingredientsSlice';
 import { checkUserAuth } from '../../services/slices/userSlice';
 import { OnlyAuth, OnlyUnAuth } from '../protected-route';
+import { loadFeeds } from '../../services/slices/feedSlice';
 
 const App = () => {
   const location = useLocation();
@@ -28,6 +29,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(loadIngredients());
+    dispatch(loadFeeds());
     dispatch(checkUserAuth());
   }, []);
 
@@ -78,7 +80,7 @@ const App = () => {
           <Route
             path='/feed/:number'
             element={
-              <Modal title='Детали заказа' onClose={() => navigate(-1)}>
+              <Modal title='' onClose={() => navigate(-1)}>
                 <OrderInfo />
               </Modal>
             }
@@ -88,10 +90,7 @@ const App = () => {
             element={
               <OnlyAuth
                 component={
-                  <Modal
-                    title='Детали ингридиента'
-                    onClose={() => navigate(-1)}
-                  >
+                  <Modal title='' onClose={() => navigate(-1)}>
                     <OrderInfo />
                   </Modal>
                 }

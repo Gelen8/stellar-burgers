@@ -17,16 +17,6 @@ import { selectUser } from '../../services/slices/userSlice';
 
 export const BurgerConstructor: FC = () => {
   /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
-  // const constructorItems = {
-  //   bun: {
-  //     price: 0
-  //   },
-  //   ingredients: []
-  // };
-
-  // const orderRequest = false;
-
-  // const orderModalData = null;
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -46,10 +36,8 @@ export const BurgerConstructor: FC = () => {
     if (!constructorItems.bun || orderRequest) {
       return;
     } else if (userData) {
-      console.log('Ты авторизован');
       dispatch(orderBurger(dataOrder));
     } else {
-      console.log('Ты не авторизован');
       navigate('/login');
     }
   };

@@ -7,7 +7,7 @@ import {
 } from '@reduxjs/toolkit';
 import { TOrder } from '@utils-types';
 
-export const loadFeeds = createAsyncThunk('feed/loadFeets', async () =>
+export const loadFeeds = createAsyncThunk('feed/loadFeeds', async () =>
   getFeedsApi()
 );
 
@@ -68,9 +68,11 @@ export const feedSlice = createSlice({
         state.orders = action.payload.orders;
         state.feed.total = action.payload.total;
         state.feed.totalToday = action.payload.totalToday;
+        state.error = null;
       })
       .addCase(loadProfileOrders.fulfilled, (state, action) => {
         state.profileOrders = action.payload;
+        state.error = null;
       })
       .addMatcher(isRejectedAction, (state, action) => {
         state.loading = false;

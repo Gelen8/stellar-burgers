@@ -81,15 +81,19 @@ export const userSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.user = action.payload.user;
         state.isAuthChecked = true;
+        state.error = '';
       })
       .addCase(logout.fulfilled, (state) => {
         state.user = null;
+        state.error = '';
       })
       .addCase(register.fulfilled, (state, action) => {
         state.user = action.payload.user;
+        state.error = '';
       })
       .addCase(updateUser.fulfilled, (state, action) => {
         state.user = action.payload.user;
+        state.error = '';
       })
       .addMatcher(isRejectedAction, (state, action) => {
         state.error = action.error.message;
