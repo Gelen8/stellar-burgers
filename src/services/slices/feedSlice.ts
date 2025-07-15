@@ -1,10 +1,5 @@
-import { getFeedsApi, getOrdersApi } from '@api';
-import {
-  Action,
-  createAsyncThunk,
-  createSelector,
-  createSlice
-} from '@reduxjs/toolkit';
+import { getFeedsApi, getOrderByNumberApi, getOrdersApi } from '@api';
+import { Action, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TOrder } from '@utils-types';
 
 export const loadFeeds = createAsyncThunk('feed/loadFeeds', getFeedsApi);
@@ -12,6 +7,11 @@ export const loadFeeds = createAsyncThunk('feed/loadFeeds', getFeedsApi);
 export const loadProfileOrders = createAsyncThunk(
   'feed/loadProfileOrders',
   getOrdersApi
+);
+
+export const loadOrderByNumber = createAsyncThunk(
+  'feed/loadOrderByNumber',
+  getOrderByNumberApi
 );
 
 interface RejectedAction extends Action {
@@ -29,6 +29,7 @@ function isPendingAction(action: Action): action is Action {
 type TFeedState = {
   profileOrders: TOrder[];
   orders: TOrder[];
+  orderData: TOrder | null;
   feed: {
     total: number;
     totalToday: number;
@@ -40,6 +41,7 @@ type TFeedState = {
 const initialState: TFeedState = {
   profileOrders: [],
   orders: [],
+  orderData: null,
   feed: {
     total: 0,
     totalToday: 0
@@ -51,11 +53,16 @@ const initialState: TFeedState = {
 export const feedSlice = createSlice({
   name: 'feed',
   initialState,
-  reducers: {},
+  reducers: {
+    clearOrderData: (state) => {
+      state.orderData = null;
+    }
+  },
   selectors: {
     selectProfileOrders: (state) => state.profileOrders,
     selectOrders: (state) => state.orders,
     selectFeed: (state) => state.feed,
+    selectOrderData: (state) => state.orderData,
     selectLoading: (state) => state.loading,
     selectError: (state) => state.error
   },
@@ -70,6 +77,10 @@ export const feedSlice = createSlice({
       })
       .addCase(loadProfileOrders.fulfilled, (state, action) => {
         state.profileOrders = action.payload;
+        state.error = null;
+      })
+      .addCase(loadOrderByNumber.fulfilled, (state, action) => {
+        state.orderData = action.payload.orders[0];
         state.error = null;
       })
       .addMatcher(isRejectedAction, (state, action) => {
@@ -87,17 +98,9 @@ export const {
   selectProfileOrders,
   selectOrders,
   selectFeed,
+  selectOrderData,
   selectLoading,
   selectError
 } = feedSlice.selectors;
 
-export const selectOrderByNumber = createSelector(
-  feedSlice.selectors.selectOrders,
-  feedSlice.selectors.selectProfileOrders,
-  (state, number) => number,
-  (orders: TOrder[], profileOrders: TOrder[], number: string) => {
-    const order = orders.find((order) => order.number.toString() === number);
-    if (order) return order;
-    return profileOrders.find((order) => order.number.toString() === number);
-  }
-);
+export const { clearOrderData } = feedSlice.actions;
