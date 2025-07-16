@@ -1,24 +1,50 @@
 import { FC, useMemo } from 'react';
 import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
+import { useDispatch, useSelector } from '../../services/store';
+import {
+  resetConstructorData,
+  selectConstructorItems
+} from '../../services/slices/constructorSlice';
+import {
+  orderBurger,
+  selectOrderModalData,
+  selectOrderRequest,
+  resetOrderModalData
+} from '../../services/slices/orderSlice';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { selectUser } from '../../services/slices/userSlice';
 
 export const BurgerConstructor: FC = () => {
   /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
-  const constructorItems = {
-    bun: {
-      price: 0
-    },
-    ingredients: []
-  };
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const orderRequest = false;
+  const constructorItems = useSelector(selectConstructorItems);
+  const orderRequest = useSelector(selectOrderRequest);
+  const orderModalData = useSelector(selectOrderModalData);
+  const userData = useSelector(selectUser);
 
-  const orderModalData = null;
+  const dataOrder: string[] = [];
+  constructorItems.bun && dataOrder.push(constructorItems.bun._id);
+  constructorItems.ingredients.forEach((ingredient) =>
+    dataOrder.push(ingredient._id)
+  );
 
   const onOrderClick = () => {
-    if (!constructorItems.bun || orderRequest) return;
+    if (!constructorItems.bun || orderRequest) {
+      return;
+    } else if (userData) {
+      dispatch(orderBurger(dataOrder));
+    } else {
+      navigate('/login');
+    }
   };
-  const closeOrderModal = () => {};
+  const closeOrderModal = () => {
+    dispatch(resetOrderModalData());
+    dispatch(resetConstructorData());
+  };
 
   const price = useMemo(
     () =>
@@ -29,8 +55,6 @@ export const BurgerConstructor: FC = () => {
       ),
     [constructorItems]
   );
-
-  return null;
 
   return (
     <BurgerConstructorUI
