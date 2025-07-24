@@ -26,7 +26,7 @@ function isPendingAction(action: Action): action is Action {
   return action.type.endsWith('pending');
 }
 
-type TFeedState = {
+export type TFeedState = {
   profileOrders: TOrder[];
   orders: TOrder[];
   orderData: TOrder | null;
@@ -104,3 +104,5 @@ export const {
 } = feedSlice.selectors;
 
 export const { clearOrderData } = feedSlice.actions;
+
+export const feedReducer = feedSlice.reducer;

@@ -11,7 +11,7 @@ import { getCookie } from '../../utils/cookie';
 
 export const login = createAsyncThunk('user/login', loginUserApi);
 
-export const logout = createAsyncThunk('user/logaut', logoutApi);
+export const logout = createAsyncThunk('user/logout', logoutApi);
 
 export const register = createAsyncThunk('user/register', registerUserApi);
 
@@ -38,7 +38,7 @@ function isRejectedAction(action: Action): action is RejectedAction {
   return action.type.endsWith('rejected');
 }
 
-type TUserState = {
+export type TUserState = {
   user: TUser | null;
   isAuthChecked: boolean;
   error: string;
@@ -95,3 +95,5 @@ export const { selectUser, selectIsAuthChecked, selectUserError } =
   userSlice.selectors;
 
 export const { setIsAuthChecked, setUser } = userSlice.actions;
+
+export const userReducer = userSlice.reducer;

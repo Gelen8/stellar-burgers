@@ -11,7 +11,7 @@ export const loadIngredients = createAsyncThunk(
   getIngredientsApi
 );
 
-type TIngredientsState = {
+export type TIngredientsState = {
   ingredients: Array<TIngredient>;
   loading: boolean;
   error: string | null;
@@ -55,6 +55,8 @@ export const {
   selectIngredientsLoading,
   selectIngredientsError
 } = ingredientsSlice.selectors;
+
+export const ingredientsReducer = ingredientsSlice.reducer;
 
 export const selectIngredientById = createSelector(
   ingredientsSlice.selectors.selectIngredients,
