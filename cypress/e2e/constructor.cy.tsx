@@ -47,30 +47,20 @@ describe('тесты страницы конструктора бургера', 
   });
 
   describe('тесты создания заказа', () => {
-    beforeEach(() => {
+    it('отображение модального окна с верным номером заказа при клике на кнопку "Оформить заказ"', () => {
       cy.intercept('POST', 'api/auth/login', { fixture: 'userData.json' });
       cy.intercept('POST', 'api/orders', { fixture: 'orderData.json' });
-    });
 
-    afterEach(() => {
-      cy.clearCookie('accessToken');
-      cy.clearLocalStorage('refreshToken');
-    });
-
-    it('добавление ингредиентов в конструктор', () => {
-      cy.get('[data-id="1"]').find('button').contains('Добавить').click();
-      cy.get('[data-id="2"]').find('button').contains('Добавить').click();
-      cy.get('[data-cy="button-order"]').should('not.be.disabled');
-    });
-
-    it('отображение модального окна с верным номером заказа при клике на кнопку "Оформить заказ"', () => {
       cy.get('[data-id="1"]').find('button').contains('Добавить').click();
       cy.get('[data-id="2"]').find('button').contains('Добавить').click();
       cy.get('[data-cy="button-order"]').click();
+
       cy.url().should('include', '/login');
+
       cy.get('[data-cy="input-email"]').type('testUser@yandex.ru');
       cy.get('[data-cy="input-password"]').type('qwerty');
       cy.get('[data-cy="button-submit"]').click();
+
       cy.getCookie('accessToken').should('have.property', 'value', 'test');
       cy.getAllLocalStorage().then((result) => {
         expect(result).to.deep.equal({
@@ -79,12 +69,19 @@ describe('тесты страницы конструктора бургера', 
           },
         });
       });
+
       cy.get('[data-cy="button-order"]').click();
       cy.get('[data-cy="modal"]').should('exist');
       cy.get('[data-cy="order-number"]').contains('85082');
+
+      cy.clearCookie('accessToken');
+      cy.clearLocalStorage('refreshToken');
     });
 
     it('очистка конструктора бургера после оформления заказа', () => {
+      cy.intercept('POST', 'api/auth/login', { fixture: 'userData.json' });
+      cy.intercept('POST', 'api/orders', { fixture: 'orderData.json' });
+
       cy.get('[data-id="1"]').find('button').contains('Добавить').click();
       cy.get('[data-id="2"]').find('button').contains('Добавить').click();
       cy.get('[data-cy="button-order"]').click();
@@ -92,10 +89,14 @@ describe('тесты страницы конструктора бургера', 
       cy.get('[data-cy="input-password"]').type('qwerty');
       cy.get('[data-cy="button-submit"]').click();
       cy.get('[data-cy="button-order"]').click();
+
       cy.get('[data-cy="button-close"]').click();
       cy.get('[data-cy="constructor-bun-top"]').should('not.exist');
       cy.get('[data-cy="constructor-bun-bottom"]').should('not.exist');
       cy.get('[data-cy="constructor-filling"]').should('not.exist');
+
+      cy.clearCookie('accessToken');
+      cy.clearLocalStorage('refreshToken');
     });
   });
 });
