@@ -7,7 +7,7 @@ export const orderBurger = createAsyncThunk(
   orderBurgerApi
 );
 
-type TOrderState = {
+export type TOrderState = {
   orderModalData: TOrder | null;
   orderRequest: boolean;
   error: string | null;
@@ -53,3 +53,5 @@ export const { selectOrderModalData, selectOrderRequest, selectOrderError } =
   orderSlice.selectors;
 
 export const { resetOrderModalData } = orderSlice.actions;
+
+export const orderReducer = orderSlice.reducer;
