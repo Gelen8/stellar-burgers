@@ -8,7 +8,6 @@ import {
 } from '../../services/slices/feedSlice';
 
 export const ProfileOrders: FC = () => {
-  /** TODO: взять переменную из стора */
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(loadProfileOrders());

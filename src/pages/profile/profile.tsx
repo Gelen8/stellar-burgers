@@ -8,7 +8,6 @@ import {
 } from '../../services/slices/userSlice';
 
 export const Profile: FC = () => {
-  /** TODO: взять переменную из стора */
   const user = useSelector(selectUser);
   const updateUserError = useSelector(selectUserError);
   const dispatch = useDispatch();

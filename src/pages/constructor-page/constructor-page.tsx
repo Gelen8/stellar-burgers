@@ -9,7 +9,6 @@ import { FC } from 'react';
 import { selectIngredientsLoading } from '../../services/slices/ingredientsSlice';
 
 export const ConstructorPage: FC = () => {
-  /** TODO: взять переменную из стора */
   const isIngredientsLoading = useSelector(selectIngredientsLoading);
 
   return (

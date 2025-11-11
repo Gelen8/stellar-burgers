@@ -16,7 +16,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { selectUser } from '../../services/slices/userSlice';
 
 export const BurgerConstructor: FC = () => {
-  /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();

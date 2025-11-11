@@ -12,7 +12,6 @@ import { useParams } from 'react-router-dom';
 import { selectIngredients } from '../../services/slices/ingredientsSlice';
 
 export const OrderInfo: FC = () => {
-  /** TODO: взять переменные orderData и ingredients из стора */
   const { number } = useParams();
   const dispatch = useDispatch();
   useEffect(() => {
